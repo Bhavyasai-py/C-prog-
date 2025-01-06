@@ -1,0 +1,524 @@
+Leetcodes(C language)
+
+#1 Two Sum
+int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
+    int* result = (int*)malloc(2 * sizeof(int));
+    *returnSize = 2;
+    
+    for (int i = 0; i < numsSize; i++) {
+        for (int j = i + 1; j < numsSize; j++) {
+            if (nums[i] + nums[j] == target) {
+                result[0] = i;
+                result[1] = j;
+                return result;
+            }
+        }
+    }
+    
+    result[0] = 0;
+    result[1] = 1;
+    return result;
+}
+
+
+#2 Longest Substring without repaeating characters
+int lengthOfLongestSubstring(char* s) {
+    if (!s || !*s) 
+        return 0;
+    
+    int charIndexMap[256]; 
+    memset(charIndexMap, -1, sizeof(charIndexMap)); 
+    
+    int maxLength = 0;
+    int startIndex = 0;
+    int i;
+    
+    for (i = 0; s[i] != '\0'; i++) {
+        
+        if (charIndexMap[s[i]] != -1 && charIndexMap[s[i]] >= startIndex) {
+            startIndex = charIndexMap[s[i]] + 1;
+        }
+        
+        
+        charIndexMap[s[i]] = i;
+        
+        if (i - startIndex + 1 > maxLength) {
+            maxLength = i - startIndex + 1;
+        }
+    }
+    
+    return maxLength;
+}
+
+#3 Reverse integer 
+int reverse(int x){
+    long sum=0;
+    while(x!=0){
+        int rem=x%10;
+        sum=sum*10 + rem;
+        x=x/10;
+    }
+    if(sum>INT_MAX || sum<INT_MIN){
+        return 0;
+    }
+    return (int)sum;
+}
+
+#4 Minimum Number of Operations to Move All Balls to Each Box
+int* minOperations(char* boxes, int* returnSize) {
+    int n = strlen(boxes);
+    int* ans = malloc(sizeof(int) * n);
+    memset(ans, 0, sizeof(int) * n);
+    for (int i = 1, count = 0; i < n; i++) {
+        if (boxes[i - 1] == '1') {
+            count++;
+        }
+        ans[i] = ans[i - 1] + count;
+    }
+    for (int i = n - 2, count = 0, sum = 0; i >= 0; i--) {
+        if (boxes[i + 1] == '1') {
+            count++;
+        }
+        sum += count;
+        ans[i] += sum;
+    }
+    *returnSize = n;
+    return ans;
+}
+
+#5 Add two numbers 
+struct ListNode* addTwoNumbers(struct ListNode* l1, struct ListNode* l2) {
+    struct ListNode* listHead = (struct ListNode*)malloc(sizeof(struct ListNode));
+    struct ListNode* listTail = listHead;
+    listTail->val = 0;
+
+    
+    while (true) {
+        int val = (l1 ? l1->val: 0) + (l2 ? l2->val: 0) + listTail->val;
+
+        listTail->val = val % 10;
+        
+        l1 = l1 ? l1->next : NULL;
+        l2 = l2 ? l2->next : NULL;
+        
+        if (l1 || l2 || val/10) {
+            listTail->next = (struct ListNode*)malloc(sizeof(struct ListNode));
+            listTail->next->val = val/10;
+            listTail = listTail->next;
+            
+        }
+        else {
+            listTail->next = NULL;
+            return listHead;
+        }
+    }
+}
+
+#6 Median of Two Sorted Arrays
+double findMedianSortedArrays(int* nums1, int nums1Size, int* nums2, int nums2Size) {
+    double s;
+    int b;
+    int t[nums1Size+nums2Size];
+int i=0; int j=0; int k=0;
+
+    while((i<nums1Size)&&(j<nums2Size))
+    {   if(nums1[i]<nums2[j])
+     {  t[k]=nums1[i];
+        i++;
+        k++;
+     }
+      else
+     {  t[k]=nums2[j];
+        j++;
+        k++;
+    }
+    }
+
+    if(i== nums1Size)
+    {
+        while(j<nums2Size)
+        {   t[k]=nums2[j];
+            j++;
+            k++;
+        }
+    }
+
+    if(j== nums2Size)
+    {
+        while(i<nums1Size)
+        {   t[k]=nums1[i];
+            i++;
+            k++;
+        }
+    }
+
+    if((nums1Size+nums2Size)%2!=0)
+    {   /
+        b=t[(nums1Size+nums2Size)/2];
+        s=(double)b;
+        return(s);
+    }
+    else 
+    {   
+        s=((double)((t[(nums1Size+nums2Size)/2])+(t[((nums1Size+nums2Size)/2)-1])))/2;
+        return(s);
+    }
+}
+
+#7 Palindrome Number
+bool isPalindrome(int x){
+    if(x<0 || x!=0 && x%10 ==0 ) return false;
+    int check=0;
+    while(x>check){
+        check = check*10 + x%10;
+        x/=10;
+    }
+    return (x==check || x==check/10);
+}
+
+#8 Roman to Integer 
+int romanToInt(char * s)
+{
+    int t['X' + 1] = {
+        ['I'] = 1,
+        ['V'] = 5,
+        ['X'] = 10,
+        ['L'] = 50,
+        ['C'] = 100,
+        ['D'] = 500,
+        ['M'] = 1000,
+    };
+    int res = 0;
+    for (int i = 0; s[i]; i++) {
+        if (t[s[i]] < t[s[i+1]])
+            res -= t[s[i]];
+        else
+            res += t[s[i]];
+    }
+    return res;
+}
+
+#9 Longest Common Prefix
+char * longestCommonPrefix(char ** str, int size){
+
+    int i,j,flag=0,k=0,min=100000;
+    char *s = (char *)malloc(127*sizeof(char));
+    strcpy(s,"");
+    if(size==0)
+        return s;
+    char c;
+    for(i=0;i<size;i++)
+    {
+        if(min>strlen(str[i]))
+            min = strlen(str[i]);
+    }
+    for(i=0;i<min;i++,k++)
+    {
+        c = str[0][i];
+        for(j=0;j<size;j++)
+        {
+            if(str[j][i]!=c)
+            {
+                flag = 1;
+                break;
+            }
+        }
+    //    printf("%d ",flag);
+    //    printf("%d ",strlen(str[i]));
+        if(flag)
+            break;
+        else
+        {
+            s[k] = c;
+            s[k+1] = '\0';
+        }
+    }
+ //   printf("%s",s);
+    return s;
+}
+
+#10 valid parantheses  
+bool isValid(char* s) {
+    int len =strlen(s);
+    char stack[len];
+    int top = -1;
+    for(int i=0;i<len;i++){
+        if(s[i]=='(' || s[i] == '{' || s[i] == '[' ){
+            stack[++top] = s[i];
+        }else{
+            if(top == -1 ||( s[i]==')'&&stack[top] != '(')||(s[i]=='}'&&stack[top] != '{')||(s[i]==']'&&stack[top]!='[')){
+                return false;
+            } 
+            top--;
+        } 
+    }  
+    return top == -1; 
+}
+
+#11 Merge Two sorted lists 
+struct ListNode* mergeTwoLists(struct ListNode* list1, struct ListNode* list2) {
+    
+    struct ListNode dummy;
+    dummy.next = NULL;
+    struct ListNode* cur = &dummy;
+
+    
+    while (list1 != NULL && list2 != NULL) {
+        if (list1->val > list2->val) {
+            cur->next = list2;
+            list2 = list2->next;
+        } else {
+            cur->next = list1;
+            list1 = list1->next;
+        }
+        cur = cur->next;
+    }
+
+    
+    cur->next = (list1 != NULL) ? list1 : list2;
+
+    
+    return dummy.next;
+}
+
+#12 remove duplicates from sorted array 
+int removeDuplicates(int* nums, int numsSize) {
+  int c=1;
+  for(int i=0;i<numsSize;i++){
+    if( nums[i]!=nums[c-1]){
+        nums[c]=nums[i];
+        c++;
+    }
+  }
+  return c;
+}
+
+#13 Remove elements 
+int removeElement(int* nums, int numsSize, int val) {
+    if(numsSize==0){
+        return 0;
+    }
+    int j=0;
+    for(int i=0;i<numsSize;i++){
+        if(nums[i]!=val){
+            nums[j++]=nums[i];
+        }
+    }
+    return j;
+}
+
+#14 Find the index of first occurance in a string 
+int strStr(char* haystack, char* needle) {
+    int haystack_size = strlen(haystack);
+    int needle_size = strlen(needle);
+    int result = -1;
+    int i = 0;  // haystack
+    int j = 0;  // needle
+
+    while (i < (haystack_size) && j < needle_size) {
+        if (haystack[i] == needle[j]) {
+            i++;
+            j++;
+        }
+        else {
+            i = i - j + 1;
+            j = 0;
+        }
+    }
+
+    return result = (j == needle_size) ? (i - needle_size) : -1;
+}
+
+#15 Search insert position 
+int searchInsert(int* nums, int numsSize, int target){
+    for(int i = 0; i < numsSize; i++){
+        if(nums[i] >= target)   return i;
+    }
+    return numsSize;
+}
+
+#16 Length of the last word 
+int lengthOfLastWord(char* s) {
+    int length=0,i,wordcounter=0;
+    for(i=0;s[i]!='\0';i++)
+    {
+        length++;
+    }
+    for(i=(length-1);s[i]==' ';i--)
+    {
+        if(s[i]==' ')
+        s[i]='\0';
+    }
+    for(i=0;s[i]!='\0';i++)
+    {
+        if(s[i]==' ')
+        {
+            wordcounter=0;
+            continue;
+        }
+        else
+        {
+            wordcounter++;
+        }
+    }
+    return wordcounter;
+    
+}
+
+#17 Plus one 
+int *plusOne(int *digits, int digitsSize, int *returnSize) {
+    *returnSize = digitsSize;
+    int *plusOne = malloc(digitsSize * sizeof(int));
+    if (plusOne == NULL)
+        return (NULL);
+    for (int i = 0; i < digitsSize; i++)
+        plusOne[i] = digits[i];
+    
+    plusOne[digitsSize - 1]++;
+    for (int i = digitsSize - 1; i - 1 >= 0; i--)
+        if (plusOne[i] == 10) {
+            plusOne[i] = 0;
+            plusOne[i - 1]++;
+        }
+
+    if (plusOne[0] == 10) {
+        (*returnSize)++;
+        plusOne = realloc(plusOne, *returnSize * sizeof(int));
+        if (plusOne == NULL)
+            return (NULL);
+        memmove(plusOne + 1, plusOne, digitsSize * sizeof(int));
+        plusOne[0] = 1;
+        plusOne[1] = 0;
+    }
+    return (plusOne);
+}
+
+#18 Add binary 
+char * addBinary(char * a, char * b){
+    int sizeA = strlen(a);
+    int sizeB = strlen(b);
+    int sizeOutput = (sizeA > sizeB ? sizeA : sizeB) + 1;
+    char * output = (char *)malloc(sizeOutput + 1);
+    int sum = 0;
+    
+    output[sizeOutput] = '\0';
+    
+    while(sizeA > 0 || sizeB > 0 || sum > 0) {
+        
+        if(sizeA > 0) {
+            sum += a[--sizeA] - '0';
+        }
+        if(sizeB > 0) {
+            sum += b[--sizeB] - '0';
+        }
+        output[--sizeOutput] = sum % 2 + '0';
+        sum /= 2;
+    }
+    return output + sizeOutput;   
+}
+
+#19 Sqrt(x)
+int mySqrt(int x) {
+  return sqrt(x);  
+}
+
+#20 Climbing stairs
+int climbStairs(int n) {
+    long long int prv1 = 1;
+    long long int prv2 = 1;
+
+    for (int i = 0; i < n; i++) {
+        long long int tmp = prv1;
+        prv1 = prv1 + prv2;
+        prv2 = tmp;
+    }
+
+    return (int)prv2;
+}
+
+#21 Removing duplicates from sorted list 
+struct ListNode* deleteDuplicates(struct ListNode* head) {
+    struct ListNode* temp=head;
+    while (temp&&temp->next)
+    {
+        if (temp->next->val==temp->val)
+        {
+            temp->next=temp->next->next;
+            continue;
+        }
+        temp=temp->next;
+    }
+    return head;
+}
+
+#22 Merge sorted list 
+void merge(int* nums1, int nums1Size, int m, int* nums2, int nums2Size, int n){
+    // Initialize i and j to store indices of the last element of 1st and 2nd array respectively...
+    int i = m - 1;
+    int j = n -1;
+    // Create a loop until either of i or j becomes zero...
+    while(i>=0 && j>=0) {
+        if(nums1[i] > nums2[j]) {
+            nums1[i+j+1] = nums1[i];
+            i--;
+        } else {
+            nums1[i+j+1] = nums2[j];
+            j--;
+        }
+    }
+    // While j does not become zero...
+    while(j >= 0) {
+        nums1[i+j+1] = nums2[j];
+        j--;
+    }
+}
+
+#23 Binary tree inorder Traversal 
+int i=0;
+int arr[101]={0};
+void inorder(struct TreeNode* s)
+{
+    if(s!=NULL)
+    {
+        inorder(s->left);
+        arr[i++]=s->val;
+        inorder(s->right);
+    }
+}
+int* inorderTraversal(struct TreeNode* root, int* returnSize){
+    inorder(root);
+    int* ans=malloc(i*sizeof(int));
+    for(int j=0;j<i;j++) ans[j]=arr[j];
+    *(returnSize)=i;
+    i=0;
+    return ans;
+}
+
+#24 Same Tree 
+bool isSameTree(struct TreeNode* p, struct TreeNode* q) {
+if (p == NULL && q == NULL) {
+return 1;
+}
+if (p == NULL || q == NULL) {
+return 0;
+}
+return (p->val == q->val) &&
+isSameTree(p->left, q->left) &&
+isSameTree(p->right, q->right);
+}
+
+#25 Symmertric Tree 
+bool isSymmetricHelp(struct TreeNode* left, struct TreeNode* right) {
+    if (left == NULL || right == NULL) {
+        return left == right;
+    }
+    if (left->val != right->val) {
+        return false;
+    }
+
+    return isSymmetricHelp(left->left, right->right) && isSymmetricHelp(left->right, right->left);
+}
+
+bool isSymmetric(struct TreeNode* root) {
+    return root == NULL || isSymmetricHelp(root->left, root->right);
+}
